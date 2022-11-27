@@ -46,12 +46,13 @@ def main():
     if app_mode == "Show Instructions":
         st.sidebar.success('To continue,  select "AQI Prediction".')
     elif app_mode == "AQI Prediction":
-        st.title("AQI Prediction")
+        st.title("AQI Prediction (Beta)")
         st.subheader("Real Time AQI")
-        st.markdown("This is the real time AQI for your city.")
+        st.markdown(
+            "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra."
+        )
         city = st.text_input("Enter your city", "Mumbai")
         state = st.text_input("Enter your state", "Maharashtra")
-        aqi_data = get_real_time_aqi(city, state)
         datetime_start = st.date_input("Start Date",
                                        pd.to_datetime('today'),
                                        min_value=pd.to_datetime('23 Nov 2022'),
@@ -64,6 +65,7 @@ def main():
         datetime_start = pd.to_datetime(datetime_start)
         datetime_end = pd.to_datetime(datetime_end) + pd.DateOffset(days=1)
         if st.button("Get AQI"):
+            aqi_data = get_real_time_aqi(city, state)
             if aqi_data is not None:
                 aqi = []
                 date_time = []

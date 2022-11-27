@@ -20,6 +20,16 @@ def get_real_time_aqi(city, state):
 
 
 def main():
+    st.set_page_config(
+        page_title="PollutionPulse",
+        page_icon="./logo.png",
+        layout="wide",
+        initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': 'https://www.extremelycoolapp.com/help',
+            'Report a bug': "https://www.extremelycoolapp.com/bug",
+            'About': "# This is a header. This is an *extremely* cool app!"
+        })
     st.set_option('deprecation.showPyplotGlobalUse', False)
     page_bg_img = """
     <style>

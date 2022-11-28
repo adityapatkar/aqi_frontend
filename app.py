@@ -94,8 +94,12 @@ def main():
                     #find how many hours ago the data was updated
                     hours_ago = (pd.to_datetime('today') -
                                  last_updated).seconds / 3600
-                    #write the last updated time in sidebar
-                    st.sidebar.write(f"Last Updated: {hours_ago:.2f} hours ago")
+                    if hours_ago < 1:
+                        st.sidebar.success(
+                            f"Last updated {round(hours_ago*60)} minutes ago.")
+                    else:
+                        st.sidebar.warning(
+                            f"Last updated {round(hours_ago)} hours ago.")
                     #st.siwrite(f"Last updated {hours_ago:.2f} hours ago")
                     st.markdown("---")
                     st.subheader("AQI Graph")

@@ -54,8 +54,8 @@ def main():
     elif app_mode == "AQI Prediction":
         st.title("AQI Prediction (Beta)")
         st.subheader("Real Time AQI")
-        st.markdown(
-            "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra."
+        st.write(
+            "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
         )
         city = st.text_input("Enter your city", "Mumbai")
         state = st.text_input("Enter your state", "Maharashtra")

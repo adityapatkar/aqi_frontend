@@ -104,27 +104,20 @@ def main():
                     st.markdown("---")
                     st.subheader("AQI Graph")
 
-                    #plot a scrollable graph
-                    fig, ax = plt.subplots()
-                    ax.plot(df['date_time'], df['aqi'])
-                    ax.set(xlabel='Date Time', ylabel='AQI', title='AQI Graph')
-                    ax.grid()
-                    st.pyplot(fig)
+                    plt.plot(df['date_time'], df['aqi'])
+                    plt.xlabel('Time')
+                    plt.ylabel('AQI')
+                    plt.title('Real Time AQI')
+                    #show only first, middle and last label on x axis
+                    plt.xticks([
+                        df['date_time'].iloc[0],
+                        df['date_time'].iloc[int(len(df['date_time']) / 2)],
+                        df['date_time'].iloc[-1]
+                    ])
+
+                    st.pyplot()
+
                     st.markdown("---")
-                    # plt.plot(df['date_time'], df['aqi'])
-                    # plt.xlabel('Time')
-                    # plt.ylabel('AQI')
-                    # plt.title('Real Time AQI')
-                    # #show only first, middle and last label on x axis
-                    # plt.xticks([
-                    #     df['date_time'].iloc[0],
-                    #     df['date_time'].iloc[int(len(df['date_time']) / 2)],
-                    #     df['date_time'].iloc[-1]
-                    # ])
-
-                    # st.pyplot()
-
-                    # st.markdown("---")
                     st.subheader("Table of AQI")
 
                     #make datetime readable

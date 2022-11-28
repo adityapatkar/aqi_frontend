@@ -13,7 +13,7 @@ def get_real_time_aqi(city, state):
                                 'state': state
                             })
     if response.status_code == 200:
-        print(response.json())
+        #print(response.json())
         return response.json()
     else:
         return None
@@ -92,21 +92,27 @@ def main():
                     st.markdown("---")
                     st.subheader("AQI Graph")
 
-                    #plot the data
-                    plt.plot(df['date_time'], df['aqi'])
-                    plt.xlabel('Time')
-                    plt.ylabel('AQI')
-                    plt.title('Real Time AQI')
-                    #show only first, middle and last label on x axis
-                    plt.xticks([
-                        df['date_time'].iloc[0],
-                        df['date_time'].iloc[int(len(df['date_time']) / 2)],
-                        df['date_time'].iloc[-1]
-                    ])
-
-                    st.pyplot()
-
+                    #plot a scrollable graph
+                    fig, ax = plt.subplots()
+                    ax.plot(df['date_time'], df['aqi'])
+                    ax.set(xlabel='Date Time', ylabel='AQI', title='AQI Graph')
+                    ax.grid()
+                    st.pyplot(fig)
                     st.markdown("---")
+                    # plt.plot(df['date_time'], df['aqi'])
+                    # plt.xlabel('Time')
+                    # plt.ylabel('AQI')
+                    # plt.title('Real Time AQI')
+                    # #show only first, middle and last label on x axis
+                    # plt.xticks([
+                    #     df['date_time'].iloc[0],
+                    #     df['date_time'].iloc[int(len(df['date_time']) / 2)],
+                    #     df['date_time'].iloc[-1]
+                    # ])
+
+                    # st.pyplot()
+
+                    # st.markdown("---")
                     st.subheader("Table of AQI")
 
                     #make datetime readable

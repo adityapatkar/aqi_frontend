@@ -89,6 +89,13 @@ def main():
                         (df['date_time'] <= datetime_end)]
                 #if the dataframe is not empty
                 if not df.empty:
+                    #find the last updated time
+                    last_updated = df['date_time'].max()
+                    #find how many hours ago the data was updated
+                    hours_ago = (pd.to_datetime('today') -
+                                 last_updated).seconds / 3600
+                    #write the last updated time
+                    st.write(f"Last updated {hours_ago:.2f} hours ago")
                     st.markdown("---")
                     st.subheader("AQI Graph")
 

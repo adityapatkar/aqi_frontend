@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import datetime
 import requests
 import matplotlib.pyplot as plt
 from env import url, city, state
@@ -76,8 +77,8 @@ def main():
         city = st.text_input("Enter your city", "Mumbai")
         state = st.text_input("Enter your state", "Maharashtra")
         datetime_start = st.date_input("Start Date",
-                                       pd.to_datetime('today'),
-                                       min_value=pd.to_datetime('23 Nov 2022'),
+                                       pd.to_datetime('21 Nov 2022'),
+                                       min_value=pd.to_datetime('21 Nov 2022'),
                                        max_value=pd.to_datetime('today'))
         datetime_end = st.date_input("End Date",
                                      pd.to_datetime('today'),
@@ -98,24 +99,34 @@ def main():
                 #convert the lists to pandas dataframe
                 df = pd.DataFrame(list(zip(date_time, aqi)),
                                   columns=['date_time', 'aqi'])
+                st.write(df)
                 #convert the date_time column to datetime
-                df['date_time'] = pd.to_datetime(df['date_time'])
+                df['date_time'] = pd.to_datetime(df['date_time'],
+                                                 format='%d/%m/%Y %H:%M:%S')
                 #select the data between the start and end date
                 df = df[(df['date_time'] >= datetime_start) &
                         (df['date_time'] <= datetime_end)]
+
                 #if the dataframe is not empty
                 if not df.empty:
                     #find the last updated time
                     last_updated = df['date_time'].max()
+                    current_datetime = datetime.datetime.now()
                     #find how many hours ago the data was updated
-                    hours_ago = (pd.to_datetime('today') -
-                                 last_updated).seconds / 3600
-                    if hours_ago < 1:
+                    minutes_ago = (current_datetime -
+                                   last_updated).seconds // 60
+                    st.sidebar.write(
+                        f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')}"
+                    )
+                    st.sidebar.write(
+                        f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+                    )
+                    if minutes_ago < 60:
                         st.sidebar.success(
-                            f"Last updated {round(hours_ago*60)} minutes ago.")
+                            f"Last updated {round(minutes_ago)} minutes ago.")
                     else:
                         st.sidebar.warning(
-                            f"Last updated {round(hours_ago)} hours ago.")
+                            f"Last updated {round(minutes_ago /60)} hours ago.")
                     #st.siwrite(f"Last updated {hours_ago:.2f} hours ago")
                     st.markdown("---")
                     st.subheader("AQI Graph")
@@ -152,7 +163,12 @@ def main():
         st.markdown("---")
         st.subheader("Prediction for next few dats")
         if st.button("Get Prediction"):
-            predicted_aqi = get_predicted_aqi(city, state, 10)
+            #days is number of days between today and 27 Nov 2022
+            days = (pd.to_datetime('27 Nov 2022') -
+                    pd.to_datetime('today')).days
+            days = abs(days)
+
+            predicted_aqi = get_predicted_aqi(city, state, days)
             if predicted_aqi is not None:
                 predicted_aqi = predicted_aqi['data']
                 date_time = []

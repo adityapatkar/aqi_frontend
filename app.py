@@ -12,8 +12,24 @@ def get_real_time_aqi(city, state):
                                 'city': city,
                                 'state': state
                             })
+
     if response.status_code == 200:
         #print(response.json())
+        return response.json()
+    else:
+        return None
+
+
+def get_predicted_aqi(city, state, period):
+    # Get the predicted AQI for a city
+    response = requests.get(f"{url}/predict",
+                            params={
+                                'city': city,
+                                'state': state,
+                                'days': str(period)
+                            })
+    print(response.status_code)
+    if response.status_code == 200:
         return response.json()
     else:
         return None
@@ -124,6 +140,7 @@ def main():
                     df['date_time'] = df['date_time'].dt.strftime(
                         '%d-%m-%Y %H:%M')
                     st.dataframe(df)
+
                 else:
                     st.error(
                         "No data found for the selected dates. Please select different dates."
@@ -131,6 +148,55 @@ def main():
 
             else:
                 st.error("No data found")
+
+        st.markdown("---")
+        st.subheader("Prediction for next few dats")
+        if st.button("Get Prediction"):
+            predicted_aqi = get_predicted_aqi(city, state, 10)
+            if predicted_aqi is not None:
+                predicted_aqi = predicted_aqi['data']
+                date_time = []
+                aqi = []
+
+                for data in predicted_aqi:
+                    date_time.append(pd.to_datetime(data['ds']))
+                    aqi.append(data['yhat'])
+
+                #convert the lists to pandas dataframe
+                df = pd.DataFrame(list(zip(date_time, aqi)),
+                                  columns=['date_time', 'aqi'])
+
+                #if the dataframe is not empty
+                if not df.empty:
+                    st.markdown("---")
+                    st.subheader("AQI Graph")
+
+                    plt.plot(df['date_time'], df['aqi'])
+                    plt.xlabel('Time')
+                    plt.ylabel('AQI')
+                    plt.title('Predicted AQI')
+                    #show only first, middle and last label on x axis
+                    plt.xticks([
+                        df['date_time'].iloc[0],
+                        df['date_time'].iloc[int(len(df['date_time']) / 2)],
+                        df['date_time'].iloc[-1]
+                    ])
+
+                    st.pyplot()
+
+                    st.markdown("---")
+                    st.subheader("Table of AQI")
+
+                    #make datetime readable
+                    df['date_time'] = df['date_time'].dt.strftime(
+                        '%d-%m-%Y %H:%M')
+                    st.dataframe(df)
+                else:
+                    st.error("No data found.")
+            else:
+                st.error("Something went wrong. Please try again.")
+        st.markdown("---")
+
     elif app_mode == "About Us":
         st.title("About Us")
         st.subheader("This is a project by:")

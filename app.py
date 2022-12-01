@@ -4,36 +4,7 @@ import datetime
 import requests
 import matplotlib.pyplot as plt
 from env import url, city, state
-
-
-def get_real_time_aqi(city, state):
-    # Get the real time AQI for a city
-    response = requests.get(f"{url}/retrieve",
-                            params={
-                                'city': city,
-                                'state': state
-                            })
-
-    if response.status_code == 200:
-        #print(response.json())
-        return response.json()
-    else:
-        return None
-
-
-def get_predicted_aqi(city, state, period):
-    # Get the predicted AQI for a city
-    response = requests.get(f"{url}/predict",
-                            params={
-                                'city': city,
-                                'state': state,
-                                'days': str(period)
-                            })
-    print(response.status_code)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return None
+from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data
 
 
 def main():
@@ -82,136 +53,70 @@ def main():
                                        max_value=pd.to_datetime('today'))
         datetime_end = st.date_input("End Date",
                                      pd.to_datetime('today'),
-                                     min_value=pd.to_datetime('23 Nov 2022'),
+                                     min_value=pd.to_datetime('22 Nov 2022'),
                                      max_value=pd.to_datetime('today'))
         #convert dates to datetime
+        days = (pd.to_datetime('27 Nov 2022') - pd.to_datetime('today')).days
+        days = abs(days)
         datetime_start = pd.to_datetime(datetime_start)
         datetime_end = pd.to_datetime(datetime_end) + pd.DateOffset(days=1)
-        if st.button("Get AQI"):
-            aqi_data = get_real_time_aqi(city, state)
-            if aqi_data is not None:
-                aqi = []
-                date_time = []
-                for data in aqi_data['data']:
-                    aqi.append(data['aqi'])
-                    date_time.append(data['datetime'])
-
-                #convert the lists to pandas dataframe
-                df = pd.DataFrame(list(zip(date_time, aqi)),
-                                  columns=['date_time', 'aqi'])
-                st.write(df)
-                #convert the date_time column to datetime
-                df['date_time'] = pd.to_datetime(df['date_time'],
-                                                 format='%d/%m/%Y %H:%M:%S')
-                #select the data between the start and end date
-                df = df[(df['date_time'] >= datetime_start) &
-                        (df['date_time'] <= datetime_end)]
-
-                #if the dataframe is not empty
-                if not df.empty:
-                    #find the last updated time
-                    last_updated = df['date_time'].max()
-                    current_datetime = datetime.datetime.now()
-                    #find how many hours ago the data was updated
-                    minutes_ago = (current_datetime -
-                                   last_updated).seconds // 60
-                    st.sidebar.write(
-                        f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')}"
-                    )
-                    st.sidebar.write(
-                        f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
-                    )
-                    if minutes_ago < 60:
-                        st.sidebar.success(
-                            f"Last updated {round(minutes_ago)} minutes ago.")
-                    else:
-                        st.sidebar.warning(
-                            f"Last updated {round(minutes_ago /60)} hours ago.")
-                    #st.siwrite(f"Last updated {hours_ago:.2f} hours ago")
-                    st.markdown("---")
-                    st.subheader("AQI Graph")
-
-                    plt.plot(df['date_time'], df['aqi'])
-                    plt.xlabel('Time')
-                    plt.ylabel('AQI')
-                    plt.title('Real Time AQI')
-                    #show only first, middle and last label on x axis
-                    plt.xticks([
-                        df['date_time'].iloc[0],
-                        df['date_time'].iloc[int(len(df['date_time']) / 2)],
-                        df['date_time'].iloc[-1]
-                    ])
-
-                    st.pyplot()
-
-                    st.markdown("---")
-                    st.subheader("Table of AQI")
-
-                    #make datetime readable
-                    df['date_time'] = df['date_time'].dt.strftime(
-                        '%d-%m-%Y %H:%M')
-                    st.dataframe(df)
-
-                else:
-                    st.error(
-                        "No data found for the selected dates. Please select different dates."
-                    )
-
+        aqi_data = get_real_time_aqi(city, state)
+        predicted_aqi = get_predicted_aqi(city, state, days)
+        df_pred = clean_prediction_data(predicted_aqi)
+        df, current_datetime, last_updated, minutes_ago = clean_real_time_aqi(
+            aqi_data, datetime_start, datetime_end)
+        if df is not None:
+            st.sidebar.write(
+                f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+            )
+            st.sidebar.write(
+                f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+            )
+            if minutes_ago < 60:
+                st.sidebar.success(
+                    f"Last updated {round(minutes_ago)} minutes ago.")
             else:
-                st.error("No data found")
-
-        st.markdown("---")
-        st.subheader("Prediction for next few dats")
+                st.sidebar.warning(
+                    f"Last updated {round(minutes_ago /60)} hours ago.")
+        if st.button("Get Real Time AQI"):
+            if df is not None:
+                st.markdown("---")
+                st.subheader("Graph of Real Time AQI")
+                plot_single_data(df, "Real Time AQI")
+                st.markdown("---")
+                st.subheader("Table of AQI")
+                #make datetime readable
+                st.dataframe(df)
+            else:
+                st.error("No data found.")
         if st.button("Get Prediction"):
-            #days is number of days between today and 27 Nov 2022
-            days = (pd.to_datetime('27 Nov 2022') -
-                    pd.to_datetime('today')).days
-            days = abs(days)
+            st.markdown("---")
+            st.subheader("Prediction for next few days")
 
-            predicted_aqi = get_predicted_aqi(city, state, days)
-            if predicted_aqi is not None:
-                predicted_aqi = predicted_aqi['data']
-                date_time = []
-                aqi = []
+            #if the dataframe is not empty
+            if df_pred is not None:
+                st.subheader("AQI Graph")
+                plot_single_data(df_pred, "Predicted AQI")
+                st.markdown("---")
+                st.subheader("Table of AQI")
 
-                for data in predicted_aqi:
-                    date_time.append(pd.to_datetime(data['ds']))
-                    aqi.append(data['yhat'])
-
-                #convert the lists to pandas dataframe
-                df = pd.DataFrame(list(zip(date_time, aqi)),
-                                  columns=['date_time', 'aqi'])
-
-                #if the dataframe is not empty
-                if not df.empty:
-                    st.markdown("---")
-                    st.subheader("AQI Graph")
-
-                    plt.plot(df['date_time'], df['aqi'])
-                    plt.xlabel('Time')
-                    plt.ylabel('AQI')
-                    plt.title('Predicted AQI')
-                    #show only first, middle and last label on x axis
-                    plt.xticks([
-                        df['date_time'].iloc[0],
-                        df['date_time'].iloc[int(len(df['date_time']) / 2)],
-                        df['date_time'].iloc[-1]
-                    ])
-
-                    st.pyplot()
-
-                    st.markdown("---")
-                    st.subheader("Table of AQI")
-
-                    #make datetime readable
-                    df['date_time'] = df['date_time'].dt.strftime(
-                        '%d-%m-%Y %H:%M')
-                    st.dataframe(df)
-                else:
-                    st.error("No data found.")
+                st.dataframe(df_pred)
             else:
-                st.error("Something went wrong. Please try again.")
-        st.markdown("---")
+                st.error("No data found.")
+        if df is not None and df_pred is not None:
+
+            df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
+
+            df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
+            df_combined = df_combined.dropna(subset=['aqi', 'aqi_pred'])
+            #plot combined data
+            if st.button("Get Combined AQI"):
+                st.subheader("Graph of Combined AQI")
+                plot_multiple_data(df_combined)
+                st.markdown("---")
+                st.subheader("Table of AQI")
+                st.dataframe(df_combined)
+                st.markdown("---")
 
     elif app_mode == "About Us":
         st.title("About Us")

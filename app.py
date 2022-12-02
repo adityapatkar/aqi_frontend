@@ -61,7 +61,7 @@ def main():
         datetime_start = pd.to_datetime(datetime_start)
         datetime_end = pd.to_datetime(datetime_end) + pd.DateOffset(days=1)
         aqi_data = get_real_time_aqi(city, state)
-        predicted_aqi = get_predicted_aqi(city, state, days)
+        predicted_aqi = get_predicted_aqi(city, state)
         df_pred = clean_prediction_data(predicted_aqi)
         df, current_datetime, last_updated, minutes_ago = clean_real_time_aqi(
             aqi_data, datetime_start, datetime_end)

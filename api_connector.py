@@ -21,13 +21,12 @@ def get_real_time_aqi(city, state):
         return None
 
 
-def get_predicted_aqi(city, state, period):
+def get_predicted_aqi(city, state):
     # Get the predicted AQI for a city
-    response = requests.get(f"{url}/predict",
+    response = requests.get(f"{url}/retrieve_all",
                             params={
-                                'city': city,
-                                'state': state,
-                                'days': str(period)
+                                'city': city.lower(),
+                                'state': state.lower(),
                             })
     print(response.status_code)
     if response.status_code == 200:
@@ -92,9 +91,9 @@ def clean_prediction_data(aqi_data):
         aqi = []
 
         for data in predicted_aqi:
-            #Sun, 27 Nov 2022 00:00:29 GMT
+            #01/12/2022 00:00:30
             date_time.append(
-                pd.to_datetime(data['ds'], format='%a, %d %b %Y %H:%M:%S %Z'))
+                pd.to_datetime(data['datetime'], format='%d/%m/%Y %H:%M:%S'))
             aqi.append(data['yhat'])
 
         #convert the lists to pandas dataframe

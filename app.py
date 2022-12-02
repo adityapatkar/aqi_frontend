@@ -4,7 +4,7 @@ import datetime
 import requests
 import matplotlib.pyplot as plt
 from env import url, city, state
-from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data
+from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data, calculate_time_series_error, insert_error_data
 
 
 def main():
@@ -65,6 +65,9 @@ def main():
         df_pred = clean_prediction_data(predicted_aqi)
         df, current_datetime, last_updated, minutes_ago = clean_real_time_aqi(
             aqi_data, datetime_start, datetime_end)
+        error = calculate_time_series_error(df, df_pred)
+        #insert_error_data(city, state, error)
+        st.sidebar.success(f"Current Model Error (MAPE): {error:.2f}")
         if df is not None:
             st.sidebar.write(
                 f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"

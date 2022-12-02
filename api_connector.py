@@ -62,6 +62,9 @@ def clean_real_time_aqi(aqi_data, datetime_start, datetime_end):
             minutes_ago = (current_datetime - last_updated).seconds // 60
 
             df['date_time'] = df['date_time'].dt.strftime('%d-%m-%Y %H:%M')
+            #convert minutes to 0
+            df['date_time'] = df['date_time'].apply(lambda x: x[:-2] + '00')
+            df = df.drop_duplicates(subset=['date_time'], keep='last')
             return df, current_datetime, last_updated, minutes_ago
 
         else:
@@ -103,6 +106,9 @@ def clean_prediction_data(aqi_data):
         #if the dataframe is not empty
         if not df.empty:
             df['date_time'] = df['date_time'].dt.strftime('%d-%m-%Y %H:%M')
+            #convert minutes to 0
+            df['date_time'] = df['date_time'].apply(lambda x: x[:-2] + '00')
+            df = df.drop_duplicates(subset=['date_time'], keep='last')
             return df
         else:
             return None
@@ -126,3 +132,31 @@ def plot_multiple_data(df_combined):
     plt.ylabel('AQI')
     plt.title('Real Time AQI vs Predicted AQI')
     st.pyplot()
+
+
+def calculate_time_series_error(df_real, df_pred):
+    #calculate the error (MAPE) between the real time aqi and predicted aqi
+    df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
+    df_combined = pd.merge(df_real, df_pred, on='date_time', how='inner')
+
+    df_combined['error'] = abs(df_combined['aqi'] - df_combined['aqi_pred'])
+    df_combined['error'] = df_combined['error'] / df_combined['aqi']
+    df_combined['error'] = df_combined['error'] * 100
+    mape = df_combined['error'].mean()
+    return mape
+
+
+def insert_error_data(city, state, mape):
+    #insert the error data into the database
+    response = requests.post(
+        f"{url}/insert_error",
+        params={
+            'city': city.lower(),
+            'state': state.lower(),
+            'mape': mape,
+            'datetime': datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+        })
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None

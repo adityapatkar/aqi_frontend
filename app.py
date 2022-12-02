@@ -108,7 +108,7 @@ def main():
             df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
 
             df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
-            df_combined = df_combined.dropna(subset=['aqi', 'aqi_pred'])
+            #df_combined = df_combined.dropna(subset=['aqi', 'aqi_pred'])
             #plot combined data
             if st.button("Get Combined AQI"):
                 st.subheader("Graph of Combined AQI")

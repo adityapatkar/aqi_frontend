@@ -160,3 +160,43 @@ def insert_error_data(city, state, mape):
         return response.json()
     else:
         return None
+
+
+def get_aqi_class(aqi):
+    if aqi <= 50:
+        return 'Good'
+    elif aqi > 50 and aqi <= 100:
+        return 'Satisfactory'
+    elif aqi > 100 and aqi <= 200:
+        return 'Moderate'
+    elif aqi > 200 and aqi <= 300:
+        return 'Poor'
+    elif aqi > 300 and aqi <= 400:
+        return 'Very Poor'
+    else:
+        return 'Severe'
+
+
+def get_aqi_color(aqi):
+    if aqi <= 50:
+        return '#00E400'
+    elif aqi > 50 and aqi <= 100:
+        return '#FFFF00'
+    elif aqi > 100 and aqi <= 200:
+        return '#FF7E00'
+    elif aqi > 200 and aqi <= 300:
+        return '#FF0000'
+    elif aqi > 300 and aqi <= 400:
+        return '#99004C'
+    else:
+        return '#7E0023'
+
+
+def apply_class_color(df, pred=False):
+    if pred is False:
+        df['aqi_class'] = df['aqi'].apply(get_aqi_class)
+        #df['aqi_color'] = df['aqi'].apply(get_aqi_color)
+    else:
+        df['aqi_class_pred'] = df['aqi_pred'].apply(get_aqi_class)
+        #df['aqi_color_pred'] = df['aqi_pred'].apply(get_aqi_color)
+    return df

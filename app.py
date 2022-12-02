@@ -4,7 +4,7 @@ import datetime
 import requests
 import matplotlib.pyplot as plt
 from env import url, city, state
-from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data, calculate_time_series_error, insert_error_data
+from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data, calculate_time_series_error, insert_error_data, apply_class_color
 
 
 def main():
@@ -88,6 +88,8 @@ def main():
                 plot_single_data(df, "Real Time AQI")
                 st.markdown("---")
                 st.subheader("Table of AQI")
+                df = apply_class_color(df)
+
                 #make datetime readable
                 st.dataframe(df)
             else:
@@ -102,14 +104,15 @@ def main():
                 plot_single_data(df_pred, "Predicted AQI")
                 st.markdown("---")
                 st.subheader("Table of AQI")
-
+                df_pred = apply_class_color(df_pred)
+                #add colour to class column
                 st.dataframe(df_pred)
             else:
                 st.error("No data found.")
         if df is not None and df_pred is not None:
-
+            df = apply_class_color(df)
             df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
-
+            df_pred = apply_class_color(df_pred, pred=True)
             df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
             #df_combined = df_combined.dropna(subset=['aqi', 'aqi_pred'])
             #plot combined data
@@ -118,6 +121,11 @@ def main():
                 plot_multiple_data(df_combined)
                 st.markdown("---")
                 st.subheader("Table of AQI")
+
+                st.dataframe(df_combined)
+                st.markdown("---")
+                st.subheader("Table of Combined AQI (Common Dates)")
+                df_combined = pd.merge(df, df_pred, on='date_time', how='inner')
                 st.dataframe(df_combined)
                 st.markdown("---")
 

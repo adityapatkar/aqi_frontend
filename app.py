@@ -42,7 +42,7 @@ def main():
 
     #show the instructions
     if app_mode == "Show Instructions":
-        st.sidebar.success('To continue,  select "AQI Prediction".')
+        st.sidebar.warning('To continue,  select "AQI Prediction".')
 
         st.title("PollutionPulse")
         st.subheader("AQI Prediction")
@@ -52,13 +52,14 @@ def main():
 
     #show the prediction page
     elif app_mode == "AQI Prediction":
-
         #set title and subtitle
-        st.title("AQI Prediction (Beta)")
-        st.subheader("Real Time AQI")
+        st.title("Welcome to PollutionPulse 🌎")
+        st.subheader("AQI Prediction (Beta) ")
         st.write(
-            "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
+            "This app is used to predict the AQI of a city for the next 48 hours."
         )
+        st.write(
+            "Please select the city and state. Also select the date range.")
 
         #Get city and state from the user
         city = st.text_input("Enter your city", "Mumbai")
@@ -112,8 +113,17 @@ def main():
                 st.sidebar.warning(
                     f"Last updated {round(minutes_ago /60)} hours ago.")
 
+        app_mode_page = st.selectbox("Select the operation", [
+            "Show Real Time AQI Data", "Show Predicted AQI Data",
+            "Compare Real Time AQI vs Predicted AQI"
+        ])
+
         #Plot and show the real time AQI data
-        if st.button("Get Real Time AQI"):
+        if app_mode_page == "Show Real Time AQI Data" and st.button("Show"):
+            st.subheader("Real Time AQI")
+            st.write(
+                "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
+            )
             if df is not None:
                 st.markdown("---")
                 st.subheader("Graph of Real Time AQI")
@@ -128,10 +138,12 @@ def main():
                 st.error("No data found.")
 
         #Plot and show the predicted AQI data
-        if st.button("Get Prediction"):
+        if app_mode_page == "Show Predicted AQI Data" and st.button("Show"):
             st.markdown("---")
             st.subheader("Prediction for next few days")
-
+            st.write(
+                "This is the predicted AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
+            )
             #if the dataframe is not empty
             if df_pred is not None:
                 st.subheader("AQI Graph")
@@ -151,7 +163,13 @@ def main():
             df_pred = apply_class_color(df_pred, pred=True)
             df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
 
-            if st.button("Get Combined AQI"):
+            if app_mode_page == "Compare Real Time AQI vs Predicted AQI" and st.button(
+                    "Show"):
+                st.markdown("---")
+                st.subheader("Real Time AQI vs Predicted AQI")
+                st.write(
+                    "This is the real time AQI vs predicted AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
+                )
                 st.subheader("Graph of Combined AQI")
                 plot_multiple_data(df_combined)
                 st.markdown("---")

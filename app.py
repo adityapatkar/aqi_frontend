@@ -1,13 +1,14 @@
 import streamlit as st
 import pandas as pd
-import datetime
-import requests
-import matplotlib.pyplot as plt
-from env import url, city, state
 from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data, calculate_time_series_error, insert_error_data, apply_class_color
 
 
 def main():
+    '''
+        Main function to run the app
+    '''
+
+    #streamlit related configurations
     st.set_page_config(
         page_title="PollutionPulse",
         page_icon="./logo.png",
@@ -32,21 +33,38 @@ def main():
     </style>
     """
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-    # Once we have the dependencies, add a selector for the app mode on the sidebar.
+
+    #create a sidebar
     st.sidebar.title("What to do")
     app_mode = st.sidebar.selectbox(
         "Choose the app mode",
         ["Show Instructions", "AQI Prediction", "About Us"])
+
+    #show the instructions
     if app_mode == "Show Instructions":
         st.sidebar.success('To continue,  select "AQI Prediction".')
+
+        st.title("PollutionPulse")
+        st.subheader("AQI Prediction")
+        st.write(
+            "This app is used to predict the AQI of a city for the next 48 hours."
+        )
+
+    #show the prediction page
     elif app_mode == "AQI Prediction":
+
+        #set title and subtitle
         st.title("AQI Prediction (Beta)")
         st.subheader("Real Time AQI")
         st.write(
             "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
         )
+
+        #Get city and state from the user
         city = st.text_input("Enter your city", "Mumbai")
         state = st.text_input("Enter your state", "Maharashtra")
+
+        #Get the start and end date for the graph
         datetime_start = st.date_input("Start Date",
                                        pd.to_datetime('21 Nov 2022'),
                                        min_value=pd.to_datetime('21 Nov 2022'),
@@ -55,19 +73,31 @@ def main():
                                      pd.to_datetime('today'),
                                      min_value=pd.to_datetime('22 Nov 2022'),
                                      max_value=pd.to_datetime('today'))
-        #convert dates to datetime
-        days = (pd.to_datetime('27 Nov 2022') - pd.to_datetime('today')).days
-        days = abs(days)
+
+        #convert start and end dates to datetime object
         datetime_start = pd.to_datetime(datetime_start)
         datetime_end = pd.to_datetime(datetime_end) + pd.DateOffset(days=1)
+
+        #Get real time AQI data
         aqi_data = get_real_time_aqi(city, state)
+
+        #get predicted AQI data
         predicted_aqi = get_predicted_aqi(city, state)
+
+        #Clean real time and predicted AQI data
         df_pred = clean_prediction_data(predicted_aqi)
         df, current_datetime, last_updated, minutes_ago = clean_real_time_aqi(
             aqi_data, datetime_start, datetime_end)
+
+        #Calculate model error
         error = calculate_time_series_error(df, df_pred)
+
+        #----FUTUTRE WORK----
         #insert_error_data(city, state, error)
+        #--------------------
         st.sidebar.success(f"Current Model Error (MAPE): {error:.2f}")
+
+        #Write the last updated time
         if df is not None:
             st.sidebar.write(
                 f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"
@@ -81,6 +111,8 @@ def main():
             else:
                 st.sidebar.warning(
                     f"Last updated {round(minutes_ago /60)} hours ago.")
+
+        #Plot and show the real time AQI data
         if st.button("Get Real Time AQI"):
             if df is not None:
                 st.markdown("---")
@@ -94,6 +126,8 @@ def main():
                 st.dataframe(df)
             else:
                 st.error("No data found.")
+
+        #Plot and show the predicted AQI data
         if st.button("Get Prediction"):
             st.markdown("---")
             st.subheader("Prediction for next few days")
@@ -109,13 +143,14 @@ def main():
                 st.dataframe(df_pred)
             else:
                 st.error("No data found.")
+
+        #Plot and show the real time and predicted AQI data
         if df is not None and df_pred is not None:
             df = apply_class_color(df)
             df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
             df_pred = apply_class_color(df_pred, pred=True)
             df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
-            #df_combined = df_combined.dropna(subset=['aqi', 'aqi_pred'])
-            #plot combined data
+
             if st.button("Get Combined AQI"):
                 st.subheader("Graph of Combined AQI")
                 plot_multiple_data(df_combined)
@@ -129,6 +164,7 @@ def main():
                 st.dataframe(df_combined)
                 st.markdown("---")
 
+    #show the about us page
     elif app_mode == "About Us":
         st.title("About Us")
         st.subheader("This is a project by:")

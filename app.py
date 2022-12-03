@@ -66,11 +66,11 @@ def main():
         state = st.text_input("Enter your state", "Maharashtra")
 
         #Get the start and end date for the graph
-        datetime_start = st.date_input("Start Date",
+        datetime_start = st.date_input("Start Date for real time AQI",
                                        pd.to_datetime('21 Nov 2022'),
                                        min_value=pd.to_datetime('21 Nov 2022'),
                                        max_value=pd.to_datetime('today'))
-        datetime_end = st.date_input("End Date",
+        datetime_end = st.date_input("End Date for real time AQI",
                                      pd.to_datetime('today'),
                                      min_value=pd.to_datetime('22 Nov 2022'),
                                      max_value=pd.to_datetime('today'))
@@ -112,8 +112,9 @@ def main():
             else:
                 st.sidebar.warning(
                     f"Last updated {round(minutes_ago /60)} hours ago.")
+        st.markdown("---")
 
-        app_mode_page = st.selectbox("Select the operation", [
+        app_mode_page = st.selectbox("Select an operation", [
             "Show Real Time AQI Data", "Show Predicted AQI Data",
             "Compare Real Time AQI vs Predicted AQI"
         ])

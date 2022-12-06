@@ -36,6 +36,10 @@ def main():
 
     #create a sidebar
     st.sidebar.title("What to do")
+
+    #show logo in sidebar
+    st.sidebar.image("./logo.png", width=200)
+
     app_mode = st.sidebar.selectbox(
         "Choose the app mode",
         ["Show Instructions", "AQI Prediction", "About Us"])

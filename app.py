@@ -102,9 +102,7 @@ def main():
         )
         st.markdown("---")
         st.write("For more information, visit:")
-        st.write(
-            "https://www.epa.gov/outdoor-air-quality-data/air-quality-index-aqi-basics"
-        )
+        st.write("http://safar.tropmet.res.in/AQI-47-12-Details")
 
     #show the prediction page
     elif app_mode == "AQI Prediction":

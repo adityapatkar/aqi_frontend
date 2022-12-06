@@ -47,7 +47,63 @@ def main():
         st.title("PollutionPulse")
         st.subheader("AQI Prediction")
         st.write(
-            "This app is used to predict the AQI of a city for the next 48 hours."
+            "Welcome to PollutionPulse. This app is used to predict the Air Quality Index of a city for the next 48 hours."
+        )
+        st.markdown("---")
+        st.subheader("Instructions")
+        st.write("Select the app mode from the sidebar.")
+        st.write("1. Select the city and state.")
+        st.write(
+            "2. Select the date range. This will affect the real time data that is fetched."
+        )
+        st.write("3. Select an operation from the dropdown.")
+        st.write(
+            "3a. Show Real Time AQI Data: This will show only the real time AQI data for the selected city."
+        )
+        st.write(
+            "3b. Show Predicted AQI Data: This will show only the predicted AQI data for the selected city."
+        )
+        st.write(
+            "3c. Compare Real Time AQI vs Predicted AQI: This will show both the real time and predicted AQI data for the selected city."
+        )
+        st.markdown("---")
+        st.subheader("What is AQI?")
+        st.write(
+            "The air quality index (AQI) is a metric used to provide a numerical value representing the level of pollution in the air. This index is typically reported on a scale from 0 to 500, with a higher number indicating a greater level of pollution. The AQI is calculated based on concentrations of pollutants in the air, including particulate matter, ozone, carbon monoxide, and sulfur dioxide."
+        )
+        st.markdown("---")
+        st.write("What is the AQI scale?")
+        st.write(
+            "The AQI scale is divided into six categories, each with a different color. The categories are as follows:"
+        )
+        st.write("1. Good: 0-50")
+        st.write("2. Satisfactory: 51-100")
+        st.write("3. Moderate: 101-200")
+        st.write("4. Poor: 201-300")
+        st.write("5. Very Poor: 301-400")
+        st.write("6. Severe: 400+")
+        st.markdown("---")
+        st.subheader("What is the AQI formula?")
+        st.write(
+            "The AQI formula is based on the concentration of pollutants in the air. The formula is as follows:"
+        )
+        st.write("AQI = ((IHI - ILO) / (BPHI - BPLO)) * (Cp - BPLO) + ILO")
+        st.write("Where:")
+        st.write("AQI = Air Quality Index")
+        st.write("IHI = Index High")
+        st.write("ILO = Index Low")
+        st.write("BPHI = Breakpoint High")
+        st.write("BPLO = Breakpoint Low")
+        st.write("Cp = Concentration of pollutant")
+        st.markdown("---")
+        st.subtitle("Why is the AQI important?")
+        st.write(
+            "The AQI is an important metric because it provides information on the level of pollution in the air, which can have serious impacts on human health. Exposure to high levels of air pollution can cause respiratory symptoms, such as difficulty breathing, coughing, and chest pain, as well as more serious health conditions such as heart disease, stroke, and lung cancer. By providing information on the AQI, people can make informed decisions about how to protect their health, such as avoiding outdoor activities in areas with high levels of pollution. In addition, the AQI can be used by policymakers and public health officials to identify areas with air quality issues and implement strategies to improve air quality."
+        )
+        st.markdown("---")
+        st.write("For more information, visit:")
+        st.write(
+            "https://www.epa.gov/outdoor-air-quality-data/air-quality-index-aqi-basics"
         )
 
     #show the prediction page

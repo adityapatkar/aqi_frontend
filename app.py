@@ -55,20 +55,20 @@ def main():
         )
         st.markdown("---")
         st.subheader("Instructions")
-        st.write("Select the app mode from the sidebar.")
-        st.write("1. Select the city and state.")
+        st.write("1. Select the app mode from the sidebar.")
+        st.write("2. Select the city and state.")
         st.write(
-            "2. Select the date range. This will affect the real time data that is fetched."
+            "3. Select the date range. This will affect the real time data that is fetched."
         )
-        st.write("3. Select an operation from the dropdown.")
+        st.write("4. Select an operation from the dropdown.")
         st.write(
-            "3a. Show Real Time AQI Data: This will show only the real time AQI data for the selected city."
-        )
-        st.write(
-            "3b. Show Predicted AQI Data: This will show only the predicted AQI data for the selected city."
+            "4a. Show Real Time AQI Data: This will show only the real time AQI data for the selected city."
         )
         st.write(
-            "3c. Compare Real Time AQI vs Predicted AQI: This will show both the real time and predicted AQI data for the selected city."
+            "4b. Show Predicted AQI Data: This will show only the predicted AQI data for the selected city."
+        )
+        st.write(
+            "4c. Compare Real Time AQI vs Predicted AQI: This will show both the real time and predicted AQI data for the selected city."
         )
         st.markdown("---")
         st.subheader("What is AQI?")

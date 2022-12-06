@@ -34,11 +34,11 @@ def main():
     """
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-    #create a sidebar
-    st.sidebar.title("What to do")
-
     #show logo in sidebar
     st.sidebar.image("./logo.png", width=200)
+
+    #create a titlw
+    st.sidebar.title("What to do")
 
     app_mode = st.sidebar.selectbox(
         "Choose the app mode",
@@ -50,6 +50,7 @@ def main():
 
         st.title("PollutionPulse 🌎")
         st.subheader("AQI Prediction")
+        st.image("./logo.png", width=200)
         st.write(
             "Welcome to PollutionPulse. This app is used to predict the Air Quality Index of a city for the next 48 hours."
         )

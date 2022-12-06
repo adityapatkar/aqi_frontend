@@ -176,7 +176,8 @@ def main():
         app_mode_page = st.selectbox("Select an operation", [
             "Show Real Time AQI Data", "Show Predicted AQI Data",
             "Compare Real Time AQI vs Predicted AQI"
-        ])
+        ],
+                                     index=2)
 
         #Plot and show the real time AQI data
         if app_mode_page == "Show Real Time AQI Data" and st.button("Show"):

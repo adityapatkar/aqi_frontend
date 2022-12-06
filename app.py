@@ -44,7 +44,7 @@ def main():
     if app_mode == "Show Instructions":
         st.sidebar.warning('To continue,  select "AQI Prediction".')
 
-        st.title("PollutionPulse")
+        st.title("PollutionPulse 🌎")
         st.subheader("AQI Prediction")
         st.write(
             "Welcome to PollutionPulse. This app is used to predict the Air Quality Index of a city for the next 48 hours."

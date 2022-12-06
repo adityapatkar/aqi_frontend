@@ -72,7 +72,7 @@ def main():
             "The air quality index (AQI) is a metric used to provide a numerical value representing the level of pollution in the air. This index is typically reported on a scale from 0 to 500, with a higher number indicating a greater level of pollution. The AQI is calculated based on concentrations of pollutants in the air, including particulate matter, ozone, carbon monoxide, and sulfur dioxide."
         )
         st.markdown("---")
-        st.write("What is the AQI scale?")
+        st.subheader("What is the AQI scale?")
         st.write(
             "The AQI scale is divided into six categories, each with a different color. The categories are as follows:"
         )
@@ -96,7 +96,7 @@ def main():
         st.write("BPLO = Breakpoint Low")
         st.write("Cp = Concentration of pollutant")
         st.markdown("---")
-        st.subtitle("Why is the AQI important?")
+        st.subheader("Why is the AQI important?")
         st.write(
             "The AQI is an important metric because it provides information on the level of pollution in the air, which can have serious impacts on human health. Exposure to high levels of air pollution can cause respiratory symptoms, such as difficulty breathing, coughing, and chest pain, as well as more serious health conditions such as heart disease, stroke, and lung cancer. By providing information on the AQI, people can make informed decisions about how to protect their health, such as avoiding outdoor activities in areas with high levels of pollution. In addition, the AQI can be used by policymakers and public health officials to identify areas with air quality issues and implement strategies to improve air quality."
         )

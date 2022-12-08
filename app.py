@@ -234,13 +234,15 @@ def main():
                 st.subheader("Graph of Combined AQI")
                 plot_multiple_data(df_combined)
                 st.markdown("---")
-                st.subheader("Table of AQI")
-
-                st.dataframe(df_combined)
-                st.markdown("---")
                 st.subheader("Table of Combined AQI (Common Dates)")
                 df_combined = pd.merge(df, df_pred, on='date_time', how='inner')
                 st.dataframe(df_combined)
+                st.markdown("---")
+                st.subheader("Future Prediction (48 hours)")
+                st.dataframe(df_pred)
+                st.markdown("---")
+                st.subheader("Past Data")
+                st.dataframe(df)
                 st.markdown("---")
 
     #show the about us page

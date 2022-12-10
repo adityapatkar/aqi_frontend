@@ -277,7 +277,7 @@ def main():
             "Please check out our GitHub repository for more information about this project."
         )
         st.write(
-            "1.     [Backend](https://www.github.com/adityapatkar/aqi_backend)")
+            "1.  [Backend](https://www.github.com/adityapatkar/aqi_backend)")
         st.write(
             "2.  [Frontend](https://www.github.com/adityapatkar/aqi_frontend)")
         st.markdown("---")

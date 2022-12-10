@@ -121,9 +121,14 @@ def main():
             "Please select the city and state. Also select the date range.")
 
         #Get city and state from the user
-        city = st.text_input("Enter your city", "Mumbai")
-        state = st.text_input("Enter your state", "Maharashtra")
-
+        city = st.text_input("Enter your city (Only supports Mumbai for now)",
+                             "Mumbai")
+        state = st.text_input(
+            "Enter your state(Only supports Maharashtra for now)",
+            "Maharashtra")
+        if city != "Mumbai" and state != "Maharashtra":
+            st.error("Only Mumbai, Maharashtra is supported for now.")
+            st.stop()
         #Get the start and end date for the graph
         datetime_start = st.date_input("Start Date for real time AQI",
                                        pd.to_datetime('21 Nov 2022'),
@@ -171,6 +176,8 @@ def main():
             else:
                 st.sidebar.warning(
                     f"Last updated {round(minutes_ago /60)} hours ago.")
+        else:
+            st.sidebar.error("No data available now.")
         st.markdown("---")
 
         app_mode_page = st.selectbox("Select an operation", [
@@ -197,6 +204,7 @@ def main():
                 st.dataframe(df)
             else:
                 st.error("No data found.")
+                st.stop()
 
         #Plot and show the predicted AQI data
         if app_mode_page == "Show Predicted AQI Data" and st.button("Show"):
@@ -216,6 +224,7 @@ def main():
                 st.dataframe(df_pred)
             else:
                 st.error("No data found.")
+                st.stop()
 
         #Plot and show the real time and predicted AQI data
         if df is not None and df_pred is not None:
@@ -244,16 +253,32 @@ def main():
                 st.subheader("Past Data")
                 st.dataframe(df)
                 st.markdown("---")
+        else:
+            st.error("No data found.")
+            st.stop()
 
     #show the about us page
     elif app_mode == "About Us":
         st.title("About Us")
         st.subheader("This is a project by:")
         #create a list of team members
-        team_members = ["1.     Aditya", "2.     Sameer"]
+        team_members = [
+            "1.     Aditya Niraj Patkar", "2.     Nithin Sameer Yerramilli"
+        ]
         #iterate over the list and display the names
         for member in team_members:
             st.markdown(member)
+
+        st.write(
+            "This project was made as a part of the course 'Principles of Data Science' at University of Maryland."
+        )
+        st.write(
+            "Please check out our GitHub repository for more information about this project."
+        )
+        st.write(" [Backend](https://www.github.com/adityapatkar/aqi_backend)")
+        st.write(
+            " [Frontend](https://www.github.com/adityapatkar/aqi_frontend)")
+        st.markdown("---")
 
 
 if __name__ == "__main__":

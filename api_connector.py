@@ -130,13 +130,25 @@ def clean_prediction_data(aqi_data):
                           columns=['date_time', 'aqi'])
 
         if not df.empty:
+
             df['date_time'] = df['date_time'].dt.strftime('%d-%m-%Y %H:%M')
+            #whereever date is greater than 9th december 2022, only select the data where seconds are 00
+            df_greater_9_dec_2022 = df[df['date_time'] >= '09-12-2022 00:00']
+            #select the data where seconds are 00
+            df_greater_9_dec_2022 = df_greater_9_dec_2022[
+                df_greater_9_dec_2022['date_time'].apply(
+                    lambda x: x[-2:]) == '00']
+            #merge this data with the data where date is less than 9th december 2022
+            df = pd.concat([
+                df[df['date_time'] < '09-12-2022 00:00'], df_greater_9_dec_2022
+            ])
 
             #convert minutes to 0 for consistency
             df['date_time'] = df['date_time'].apply(lambda x: x[:-2] + '00')
 
             #drop the duplicate rows
-            df = df.drop_duplicates(subset=['date_time'], keep='last')
+            df = df.drop_duplicates(subset=['date_time'],
+                                    keep='last').reset_index(drop=True)
             return df
         else:
             return None
@@ -190,7 +202,13 @@ def calculate_time_series_error(df_real, df_pred):
     #calculate the mean error
     mape = df_combined['error'].mean()
 
-    return mape
+    #error for the last 24 hours
+    df_combined_last_24_hours = df_combined[df_combined['date_time'] >= (
+        datetime.datetime.now() -
+        datetime.timedelta(hours=24)).strftime('%d-%m-%Y %H:%M')]
+    mape_last_24_hours = df_combined_last_24_hours['error'].mean()
+
+    return mape, mape_last_24_hours
 
 
 def insert_error_data(city, state, mape):

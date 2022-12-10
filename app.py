@@ -155,12 +155,14 @@ def main():
             aqi_data, datetime_start, datetime_end)
 
         #Calculate model error
-        error = calculate_time_series_error(df, df_pred)
+        error, recent_error = calculate_time_series_error(df, df_pred)
 
         #----FUTUTRE WORK----
         #insert_error_data(city, state, error)
         #--------------------
         st.sidebar.success(f"Current Model Error (MAPE): {error:.2f}")
+        st.sidebar.success(
+            f"Last 24 hours Model Error (MAPE): {recent_error:.2f}")
 
         #Write the last updated time
         if df is not None:

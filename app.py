@@ -160,7 +160,7 @@ def main():
         #----FUTUTRE WORK----
         #insert_error_data(city, state, error)
         #--------------------
-        st.sidebar.success(f"Current Model Error (MAPE): {error:.2f}")
+        st.sidebar.success(f"Total Model Error (MAPE): {error:.2f}")
         st.sidebar.success(
             f"Last 24 hours Model Error (MAPE): {recent_error:.2f}")
 

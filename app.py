@@ -272,12 +272,14 @@ def main():
         st.write(
             "This project was made as a part of the course 'Principles of Data Science' at University of Maryland."
         )
+        st.markdown("---")
         st.write(
             "Please check out our GitHub repository for more information about this project."
         )
-        st.write(" [Backend](https://www.github.com/adityapatkar/aqi_backend)")
         st.write(
-            " [Frontend](https://www.github.com/adityapatkar/aqi_frontend)")
+            "1.     [Backend](https://www.github.com/adityapatkar/aqi_backend)")
+        st.write(
+            "2.  [Frontend](https://www.github.com/adityapatkar/aqi_frontend)")
         st.markdown("---")
 
 

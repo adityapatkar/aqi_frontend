@@ -250,11 +250,14 @@ def main():
                 st.dataframe(df_combined)
                 st.markdown("---")
                 st.subheader("Future Prediction (48 hours)")
-                st.dataframe(df_pred)
+                st.dataframe(df_pred.tail(48))
                 st.markdown("---")
                 st.subheader("Past Data")
                 st.dataframe(df)
                 st.markdown("---")
+                st.subheader("All Predicted Data")
+                st.dataframe(df_pred)
+
         else:
             st.error("No data found.")
             st.stop()

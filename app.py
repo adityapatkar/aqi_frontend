@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data, calculate_time_series_error, insert_error_data, apply_class_color
+import datetime
 
 
 def main():
@@ -122,10 +123,12 @@ def main():
 
         #Get city and state from the user
         city = st.text_input("Enter your city (Only supports Mumbai for now)",
-                             "Mumbai")
+                             "Mumbai",
+                             disabled=True)
         state = st.text_input(
             "Enter your state(Only supports Maharashtra for now)",
-            "Maharashtra")
+            "Maharashtra",
+            disabled=True)
         if city != "Mumbai" and state != "Maharashtra":
             st.error("Only Mumbai, Maharashtra is supported for now.")
             st.stop()
@@ -195,6 +198,14 @@ def main():
                 "This is the real time AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
             )
             if df is not None:
+                df['date_time'] = pd.to_datetime(df['date_time'],
+                                                 format="%d-%m-%Y %H:%M")
+
+                #select the data between the start and end date
+                df = df[(df['date_time'] >= datetime_start) &
+                        (df['date_time'] <= datetime_end)]
+
+                df['date_time'] = df['date_time'].dt.strftime('%d-%m-%Y %H:%M')
                 st.markdown("---")
                 st.subheader("Graph of Real Time AQI")
                 plot_single_data(df, "Real Time AQI")
@@ -228,39 +239,53 @@ def main():
                 st.error("No data found.")
                 st.stop()
 
-        #Plot and show the real time and predicted AQI data
-        if df is not None and df_pred is not None:
-            df = apply_class_color(df)
-            df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
-            df_pred = apply_class_color(df_pred, pred=True)
-            df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
+        elif app_mode_page == "Compare Real Time AQI vs Predicted AQI":
+            #Plot and show the real time and predicted AQI data
+            if df is not None and df_pred is not None:
 
-            if app_mode_page == "Compare Real Time AQI vs Predicted AQI" and st.button(
-                    "Show"):
-                st.markdown("---")
-                st.subheader("Real Time AQI vs Predicted AQI")
-                st.write(
-                    "This is the real time AQI vs predicted AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
-                )
-                st.subheader("Graph of Combined AQI")
-                plot_multiple_data(df_combined)
-                st.markdown("---")
-                st.subheader("Table of Combined AQI (Common Dates)")
-                df_combined = pd.merge(df, df_pred, on='date_time', how='inner')
-                st.dataframe(df_combined)
-                st.markdown("---")
-                st.subheader("Future Prediction (48 hours)")
-                st.dataframe(df_pred.tail(48))
-                st.markdown("---")
-                st.subheader("Past Data")
-                st.dataframe(df)
-                st.markdown("---")
-                st.subheader("All Predicted Data")
-                st.dataframe(df_pred)
+                df = apply_class_color(df)
+                # convert date_time to datetime object with format 21-11-2022 22:00
+                df['date_time'] = pd.to_datetime(df['date_time'],
+                                                 format="%d-%m-%Y %H:%M")
 
-        else:
-            st.error("No data found.")
-            st.stop()
+                #select the data between the start and end date
+                df = df[(df['date_time'] >= datetime_start) &
+                        (df['date_time'] <= datetime_end)]
+
+                df['date_time'] = df['date_time'].dt.strftime('%d-%m-%Y %H:%M')
+                df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
+                df_pred = apply_class_color(df_pred, pred=True)
+                df_combined = pd.merge(df, df_pred, on='date_time', how='outer')
+
+                if app_mode_page == "Compare Real Time AQI vs Predicted AQI" and st.button(
+                        "Show"):
+                    st.markdown("---")
+                    st.subheader("Real Time AQI vs Predicted AQI")
+                    st.write(
+                        "This is the real time AQI vs predicted AQI for your city. (Currently only available for Mumbai, Maharashtra.)"
+                    )
+                    st.subheader("Graph of Combined AQI")
+                    plot_multiple_data(df_combined)
+                    st.markdown("---")
+                    st.subheader("Table of Combined AQI (Common Dates)")
+                    df_combined = pd.merge(df,
+                                           df_pred,
+                                           on='date_time',
+                                           how='inner')
+                    st.dataframe(df_combined)
+                    st.markdown("---")
+                    st.subheader("Future Prediction (48 hours)")
+                    st.dataframe(df_pred.tail(48))
+                    st.markdown("---")
+                    st.subheader("Past Data")
+                    st.dataframe(df)
+                    st.markdown("---")
+                    st.subheader("All Predicted Data")
+                    st.dataframe(df_pred)
+
+            else:
+                st.error("No data found.")
+                st.stop()
 
     #show the about us page
     elif app_mode == "About Us":

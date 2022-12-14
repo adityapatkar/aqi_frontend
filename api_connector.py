@@ -61,8 +61,8 @@ def clean_real_time_aqi(aqi_data, datetime_start, datetime_end):
                                          format='%d/%m/%Y %H:%M:%S')
 
         #select the data between the start and end date
-        df = df[(df['date_time'] >= datetime_start) &
-                (df['date_time'] <= datetime_end)]
+        # df = df[(df['date_time'] >= datetime_start) &
+        #         (df['date_time'] <= datetime_end)]
 
         if not df.empty:
 
@@ -90,7 +90,7 @@ def plot_single_data(df, title):
     '''
         Plot the data for a single dataframe
     '''
-
+    df['date_time'] = pd.to_datetime(df['date_time'], format='%d-%m-%Y %H:%M')
     #plot the data
     plt.plot(df['date_time'], df['aqi'])
     plt.xlabel('Time')
@@ -159,7 +159,8 @@ def plot_multiple_data(df_combined):
     '''
         Plot the data for multiple dataframes
     '''
-
+    df_combined['date_time'] = pd.to_datetime(df_combined['date_time'],
+                                              format='%d-%m-%Y %H:%M')
     #plot the data for real time aqi
     plt.plot(df_combined['date_time'],
              df_combined['aqi'],

@@ -4,6 +4,7 @@ import datetime
 import requests
 import matplotlib.pyplot as plt
 from env import url
+import webbrowser
 
 
 #helper function to get real time aqi from backend
@@ -106,6 +107,13 @@ def plot_single_data(df, title):
 
     #show the plot
     st.pyplot()
+
+
+def redirect(_url):
+    '''
+        Redirect to a url
+    '''
+    webbrowser.open_new_tab(_url)
 
 
 def clean_prediction_data(aqi_data):

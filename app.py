@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
-from api_connector import get_real_time_aqi, get_predicted_aqi, clean_real_time_aqi, plot_single_data, clean_prediction_data, plot_multiple_data, calculate_time_series_error, insert_error_data, apply_class_color
+from api_connector import (get_real_time_aqi, get_predicted_aqi,
+                           clean_real_time_aqi, plot_single_data,
+                           clean_prediction_data, plot_multiple_data,
+                           calculate_time_series_error, insert_error_data,
+                           apply_class_color, redirect)
 import datetime
 
 
@@ -41,9 +45,9 @@ def main():
     #create a titlw
     st.sidebar.title("What to do")
 
-    app_mode = st.sidebar.selectbox(
-        "Choose the app mode",
-        ["Show Instructions", "AQI Prediction", "About Us"])
+    app_mode = st.sidebar.selectbox("Choose the app mode", [
+        "Show Instructions", "AQI Prediction", "About Us", "Read Project Report"
+    ])
 
     #show the instructions
     if app_mode == "Show Instructions":
@@ -311,6 +315,15 @@ def main():
         st.write(
             "2.  [Frontend](https://www.github.com/adityapatkar/aqi_frontend)")
         st.markdown("---")
+        st.write("For any queries, please contact us at:")
+        st.write("  [Email](mailto:apatkar@umd.edu)")
+        st.write("  [LinkedIn](https://www.linkedin.com/in/adityapat10/)")
+        st.write("  [GitHub](https://www.github.com/adityapatkar)")
+
+    elif app_mode == "Read Project Report":
+        redirect(
+            "https://drive.google.com/file/d/1ulqMSMQEDprxPonHrvblKqWpJDW1WdcE/view?usp=sharing"
+        )
 
 
 if __name__ == "__main__":

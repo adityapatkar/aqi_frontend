@@ -173,18 +173,20 @@ def main():
 
         #Write the last updated time
         if df is not None:
-            st.sidebar.write(
-                f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"
-            )
-            st.sidebar.write(
-                f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
-            )
+            st.sidebar.markdown("---")
             if minutes_ago < 60:
                 st.sidebar.success(
                     f"Last updated {round(minutes_ago)} minutes ago.")
             else:
                 st.sidebar.warning(
                     f"Last updated {round(minutes_ago /60)} hours ago.")
+
+            st.sidebar.write(
+                f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+            )
+            st.sidebar.write(
+                f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+            )
         else:
             st.sidebar.error("No data available now.")
         st.markdown("---")

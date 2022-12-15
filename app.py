@@ -323,6 +323,12 @@ def main():
         st.write("  [GitHub](https://www.github.com/adityapatkar)")
 
     elif app_mode == "Read Project Report":
+        st.subheader("Read Project Report")
+        st.write("Please click on the link below to read the project report.")
+        st.write(
+            "-  [Project Report](https://drive.google.com/file/d/1ulqMSMQEDprxPonHrvblKqWpJDW1WdcE/view?usp=sharing)"
+        )
+
         redirect(
             "https://drive.google.com/file/d/1ulqMSMQEDprxPonHrvblKqWpJDW1WdcE/view?usp=sharing"
         )

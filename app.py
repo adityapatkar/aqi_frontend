@@ -258,7 +258,14 @@ def main():
                 df = df[(df['date_time'] >= datetime_start) &
                         (df['date_time'] <= datetime_end)]
 
+                df_pred['date_time'] = pd.to_datetime(df_pred['date_time'],
+                                                      format="%d-%m-%Y %H:%M")
+
+                #select the data between the start and end date
+                df_pred = df_pred[df_pred['date_time'] >= datetime_start]
                 df['date_time'] = df['date_time'].dt.strftime('%d-%m-%Y %H:%M')
+                df_pred['date_time'] = df_pred['date_time'].dt.strftime(
+                    '%d-%m-%Y %H:%M')
                 df_pred = df_pred.rename(columns={'aqi': 'aqi_pred'})
                 df_pred = apply_class_color(df_pred, pred=True)
                 df_combined = pd.merge(df, df_pred, on='date_time', how='outer')

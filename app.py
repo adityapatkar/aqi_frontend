@@ -148,7 +148,7 @@ def main():
                                        min_value=pd.to_datetime('21 Nov 2022'),
                                        max_value=pd.to_datetime('26 Dec 2022'))
         datetime_end = st.date_input("End Date for real time AQI",
-                                     pd.to_datetime('today'),
+                                     pd.to_datetime('26 Dec 2022'),
                                      min_value=pd.to_datetime('22 Nov 2022'),
                                      max_value=pd.to_datetime('26 Dec 2022'))
 
@@ -164,7 +164,7 @@ def main():
 
         #Clean real time and predicted AQI data
         df_pred = clean_prediction_data(predicted_aqi)
-        df, current_datetime, last_updated, minutes_ago = clean_real_time_aqi(
+        df, current_datetime, _, _ = clean_real_time_aqi(
             aqi_data, datetime_start, datetime_end)
 
         #Calculate model error

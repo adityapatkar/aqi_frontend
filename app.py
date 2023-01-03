@@ -59,6 +59,9 @@ def main():
         st.write(
             "Welcome to PollutionPulse. This app is used to predict the Air Quality Index of a city for the next 48 hours."
         )
+        st.warning(
+            "This app has not been updated since 25-Dec-2022 due to high costs. It was made for educational purposes only. The static data is still available for viewing."
+        )
         st.markdown("---")
         st.subheader("Instructions")
         st.write("1. Select the app mode from the sidebar.")
@@ -121,6 +124,9 @@ def main():
         st.subheader("AQI Prediction (Beta) ")
         st.write(
             "This app is used to predict the AQI of a city for the next 48 hours."
+        )
+        st.warning(
+            "This app has not been updated since 25-Dec-2022 due to high costs. It was made for educational purposes only. The static data is still available for viewing."
         )
         st.write(
             "Please select the city and state. Also select the date range.")
@@ -303,6 +309,9 @@ def main():
     #show the about us page
     elif app_mode == "About Us":
         st.title("About Us")
+        st.warning(
+            "This app has not been updated since 25-Dec-2022 due to high costs. It was made for educational purposes only. The static data is still available for viewing."
+        )
         st.subheader("This is a project by:")
         #create a list of team members
         team_members = [
@@ -331,6 +340,9 @@ def main():
 
     elif app_mode == "Read Project Report":
         st.subheader("Read Project Report")
+        st.warning(
+            "This app has not been updated since 25-Dec-2022 due to high costs. It was made for educational purposes only. The static data is still available for viewing."
+        )
         st.write("Please click on the link below to read the project report.")
         st.write(
             "-  [Project Report](https://drive.google.com/file/d/1ulqMSMQEDprxPonHrvblKqWpJDW1WdcE/view?usp=sharing)"

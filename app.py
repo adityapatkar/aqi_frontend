@@ -146,11 +146,11 @@ def main():
         datetime_start = st.date_input("Start Date for real time AQI",
                                        pd.to_datetime('21 Nov 2022'),
                                        min_value=pd.to_datetime('21 Nov 2022'),
-                                       max_value=pd.to_datetime('today'))
+                                       max_value=pd.to_datetime('26 Dec 2022'))
         datetime_end = st.date_input("End Date for real time AQI",
                                      pd.to_datetime('today'),
                                      min_value=pd.to_datetime('22 Nov 2022'),
-                                     max_value=pd.to_datetime('today'))
+                                     max_value=pd.to_datetime('26 Dec 2022'))
 
         #convert start and end dates to datetime object
         datetime_start = pd.to_datetime(datetime_start)
@@ -176,23 +176,24 @@ def main():
         st.sidebar.success(f"Total Model Error (MAPE): {error:.2f}")
         st.sidebar.success(
             f"Last 24 hours Model Error (MAPE): {recent_error:.2f}")
-
+        days_ago = (current_datetime - pd.to_datetime('25 Dec 2022')).days
         #Write the last updated time
         if df is not None:
-            st.sidebar.markdown("---")
-            if minutes_ago < 60:
-                st.sidebar.success(
-                    f"Last updated {round(minutes_ago)} minutes ago.")
-            else:
-                st.sidebar.warning(
-                    f"Last updated {round(minutes_ago /60)} hours ago.")
+            st.sidebar.success(f"Last updated {round(days_ago)} days ago.")
+            # st.sidebar.markdown("---")
+            # if minutes_ago < 60:
+            #     st.sidebar.success(
+            #         f"Last updated {round(minutes_ago)} minutes ago.")
+            # else:
+            #     st.sidebar.warning(
+            #         f"Last updated {round(minutes_ago /60)} hours ago.")
 
-            st.sidebar.write(
-                f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"
-            )
-            st.sidebar.write(
-                f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
-            )
+            # st.sidebar.write(
+            #     f"Current Date: {current_datetime.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+            # )
+            # st.sidebar.write(
+            #     f"Last Updated: {last_updated.strftime('%d/%m/%Y %H:%M:%S')} UTC"
+            # )
         else:
             st.sidebar.error("No data available now.")
         st.markdown("---")
